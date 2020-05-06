@@ -125,7 +125,7 @@ typedef	signed __int64		SINT64;
 #define	LABEL				__declspec(naked)
 #define	RELEASE(x) 			if (x) {(x)->Release(); (x) = NULL;}
 
-#if !defined(_WIN64)
+#if defined(_M_I386)
 #define	OPNGENX86
 #endif
 
@@ -170,7 +170,9 @@ typedef	signed __int64		SINT64;
 #define	SUPPORT_SOFTKBD		0
 #define SUPPORT_S98
 #define SUPPORT_WAVEREC
+#if !defined(_M_ARM)
 #define SUPPORT_RECVIDEO
+#endif
 #define	SUPPORT_KEYDISP
 #define	SUPPORT_MEMDBG32
 #define	SUPPORT_HOSTDRV
@@ -179,7 +181,7 @@ typedef	signed __int64		SINT64;
 /* #define	SUPPORT_IDEIO */
 #define SUPPORT_ARC
 #define SUPPORT_ZLIB
-#if !defined(_WIN64)
+#if defined(_M_I386)
 #define	SUPPORT_DCLOCK
 #endif
 
@@ -189,15 +191,20 @@ typedef	signed __int64		SINT64;
 
 #define SOUND_CRITICAL
 #define	SOUNDRESERVE	20
+#if !defined(_M_ARM)
 #define SUPPORT_VSTi
 #define SUPPORT_ASIO
+#endif
+
 #if (_MSC_VER >= 1500)
 #define SUPPORT_WASAPI
 #endif	/* (_MSC_VER >= 1500) */
 
 #define	SUPPORT_TEXTCNV
 
+#if !defined(_M_ARM)
 #define SUPPORT_WIN2000HOST
+#endif // !_M_ARM
 
 #if defined(SUPPORT_IA32_HAXM)
 #define USE_CUSTOM_HOOKINST

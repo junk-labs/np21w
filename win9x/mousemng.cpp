@@ -5,8 +5,10 @@
 #include	"mousemng.h"
 #include    "scrnmng.h"
 
+#if !defined(_M_ARM)
 #include	<dinput.h>
 //#pragma comment(lib, "dinput8.lib")
+#endif
 
 #define DIDFT_OPTIONAL	0x80000000
 
@@ -35,8 +37,10 @@ static  int mousebufX = 0; // マウス移動バッファ(X)
 static  int mousebufY = 0; // マウス移動バッファ(Y)
 
 // RAWマウス入力対応 np21w ver0.86 rev13
+#if !defined(_M_ARM)
 static  LPDIRECTINPUT8 dinput = NULL; 
 static  LPDIRECTINPUTDEVICE8 diRawMouse = NULL; 
+#endif
 static  int mouseRawDeltaX = 0;
 static  int mouseRawDeltaY = 0;
 
@@ -45,6 +49,7 @@ typedef HRESULT (WINAPI *FN_DIRECTINPUT8CREATE)(HINSTANCE hinst, DWORD dwVersion
 static  HMODULE hModuleDI8 = NULL;
 static  FN_DIRECTINPUT8CREATE fndi8create = NULL;
 
+#if !defined(_M_ARM)
 BRESULT mousemng_checkdinput8(){
 	// DirectInput8が使用できるかチェック
 	LPDIRECTINPUT8 test_dinput = NULL; 
@@ -82,6 +87,7 @@ scre_err:
 	fndi8create = NULL;
 	return(FAILURE);
 }
+#endif
 
 UINT8 mousemng_getstat(SINT16 *x, SINT16 *y, int clear) {
 #ifdef SUPPORT_WACOM_TABLET
@@ -107,7 +113,11 @@ void mousemng_setstat(SINT16 x, SINT16 y, UINT8 btn) {
 }
 
 UINT8 mousemng_supportrawinput() {
+#if !defined(_M_ARM)
 	return(dinput && diRawMouse);
+#else
+	return false;
+#endif
 }
 
 void mousemng_updatespeed() {
@@ -126,6 +136,7 @@ static void getmaincenter(POINT *cp) {
 	cp->y = (rct.bottom + rct.top) / 2;
 }
 
+#if !defined(_M_ARM)
 static void initDirectInput(){
 	
 	HRESULT		hr;
@@ -229,7 +240,7 @@ static void destroyDirectInput(){
 		fndi8create = NULL;
 	}
 }
-
+#endif
 static void mousecapture(BOOL capture) {
 
 	LONG	style;
@@ -239,14 +250,14 @@ static void mousecapture(BOOL capture) {
 #ifdef SUPPORT_WACOM_TABLET
 	cmwacom_setExclusiveMode(capture ? true : false);
 #endif
-
+#if !defined(_M_ARM)
 	if(np2oscfg.rawmouse){
 		if(mousemng_checkdinput8()!=SUCCESS){
 			np2oscfg.rawmouse = 0;
 			MessageBox(g_hWndMain, _T("Failed to initialize DirectInput8."), _T("DirectInput Error"), MB_OK|MB_ICONEXCLAMATION);
 		}
 	}
-
+#endif
 	mousemng_updatespeed();
 
 	style = GetClassLong(g_hWndMain, GCL_STYLE);
@@ -261,19 +272,23 @@ static void mousecapture(BOOL capture) {
 		ClipCursor(&rct);
 		style &= ~(CS_DBLCLKS);
 		mousecaptureflg = 1;
+#if !defined(_M_ARM)
 		if(np2oscfg.rawmouse && fndi8create){
 			initDirectInput();
 		}
+#endif
 	}
 	else {
 		ShowCursor(TRUE);
 		ClipCursor(NULL);
 		style |= CS_DBLCLKS;
 		mousecaptureflg = 0;
+#if !defined(_M_ARM)
 		if(np2oscfg.rawmouse && fndi8create && diRawMouse){
 			diRawMouse->Unacquire();
 			//destroyDirectInput();
 		}
+#endif
 	}
 	SetClassLong(g_hWndMain, GCL_STYLE, style);
 }
@@ -288,7 +303,9 @@ void mousemng_initialize(void) {
 }
 
 void mousemng_destroy(void) {
+#if !defined(_M_ARM)
 	destroyDirectInput();
+#endif
 }
 
 void mousemng_sync(void) {
@@ -298,6 +315,7 @@ void mousemng_sync(void) {
 
 	if ((!mousemng.flag) && (GetCursorPos(&p))) {
 		getmaincenter(&cp);
+#if !defined(_M_ARM)
 		if(np2oscfg.rawmouse && fndi8create && dinput==NULL)
 			initDirectInput();
 		if(np2oscfg.rawmouse && fndi8create && mousemng_supportrawinput()){
@@ -327,6 +345,10 @@ void mousemng_sync(void) {
 			mousebufX += (p.x - cp.x)*mouseMul;
 			mousebufY += (p.y - cp.y)*mouseMul;
 		}
+#else
+		mousebufX += (p.x - cp.x)*mouseMul;
+		mousebufY += (p.y - cp.y)*mouseMul;
+#endif
 		if(mousebufX >= mouseDiv || mousebufX <= -mouseDiv){
 			mousemng.x += (SINT16)(mousebufX / mouseDiv);
 			mousebufX   = mousebufX % mouseDiv;
