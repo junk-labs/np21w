@@ -760,7 +760,7 @@ static const PFTBL s_IniItems[] =
 	PFVAL("force400", PFRO_BOOL,		&np2oscfg.force400),
 	PFVAL("e_resume", PFTYPE_BOOL,		&np2oscfg.resume),
 	PFVAL("STATSAVE", PFRO_BOOL,		&np2oscfg.statsave),
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	PFVAL("nousemmx", PFTYPE_BOOL,		&np2oscfg.disablemmx),
 #endif
 	PFVAL("windtype", PFTYPE_UINT8,		&np2oscfg.wintype),

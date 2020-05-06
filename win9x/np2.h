@@ -72,7 +72,7 @@ typedef struct {
 
 	UINT8	resume;													// ver0.30
 	UINT8	statsave;
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	UINT8	disablemmx;
 #endif
 	UINT8	wintype;
@@ -163,7 +163,7 @@ extern	HWND		g_hWndMain;
 extern	UINT8		np2break;
 extern	BOOL		winui_en;
 extern	UINT8		g_scrnmode;
-#if !defined(_WIN64)
+#if defined(_M_I386)
 extern	int			mmxflag;
 #endif
 

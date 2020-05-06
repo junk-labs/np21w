@@ -25,7 +25,7 @@
 #include "sound\vermouth\vermouth.h"
 #endif
 
-#if !defined(_WIN64)
+#if defined(_M_I386)
 #ifdef __cplusplus
 extern "C"
 {
@@ -352,7 +352,7 @@ inline void CSoundMng::SetReverse(bool bReverse)
 {
 	if (!bReverse)
 	{
-#if !defined(_WIN64)
+#if defined(_M_I386)
 		if (mmxflag)
 		{
 			m_fnMix = satuation_s16;

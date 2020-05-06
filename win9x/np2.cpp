@@ -74,7 +74,7 @@
 #include "bmpdata.h"
 #include "vram/scrnsave.h"
 #include "fdd/sxsi.h"
-#if !defined(_WIN64)
+#if defined(_M_IX86)
 #include "cputype.h"
 #endif
 #if defined(SUPPORT_DCLOCK)
@@ -117,7 +117,7 @@ void cmwacom_setNCControl(bool enable);
 static	TCHAR		szClassName[] = _T("NP2-MainWindow");
 		HWND		g_hWndMain;
 		HINSTANCE	g_hInstance;
-#if !defined(_WIN64)
+#if defined(_M_I386)
 		int			mmxflag;
 #endif
 		UINT8		np2break = 0;									// ver0.30
@@ -171,7 +171,7 @@ static	TCHAR		szClassName[] = _T("NP2-MainWindow");
 						0xffffff, 0xffbf6a, 0, 0,
 						0, 1,
 						0, 0,
-#if !defined(_WIN64)
+#if defined(_M_I386)
 						0,
 #endif
 						0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, FSCRNMOD_SAMEBPP | FSCRNMOD_SAMERES | FSCRNMOD_ASPECTFIX8, 0,
@@ -3102,7 +3102,7 @@ void loadNP2INI(const OEMCHAR *fname){
 	szClassName[1] = (TCHAR)np2oscfg.winid[1];
 	szClassName[2] = (TCHAR)np2oscfg.winid[2];
 	
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	mmxflag = (havemmx())?0:MMXFLAG_NOTSUPPORT;
 	mmxflag += (np2oscfg.disablemmx)?MMXFLAG_DISABLE:0;
 #endif
@@ -3411,7 +3411,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,
 	g_hInstance = hInstance = LoadExternalResource(hInstance);
 	CWndProc::SetResourceHandle(hInstance);
 
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	mmxflag = (havemmx())?0:MMXFLAG_NOTSUPPORT;
 	mmxflag += (np2oscfg.disablemmx)?MMXFLAG_DISABLE:0;
 #endif

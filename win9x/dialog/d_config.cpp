@@ -240,7 +240,7 @@ BOOL CConfigureDlg::OnInitDialog()
 
 	CheckDlgButton(IDC_ALLOWRESIZE, (np2oscfg.thickframe) ? BST_CHECKED : BST_UNCHECKED);
 
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	if (mmxflag & MMXFLAG_NOTSUPPORT)
 	{
 		GetDlgItem(IDC_DISABLEMMX).EnableWindow(FALSE);
@@ -765,7 +765,7 @@ void CConfigureDlg::OnOK()
 		nUpdated |= SYS_UPDATEOSCFG;
 	}
 
-#if !defined(_WIN64)
+#if defined(_M_I386)
 	if (!(mmxflag & MMXFLAG_NOTSUPPORT))
 	{
 		const UINT8 bDisableMMX = (IsDlgButtonChecked(IDC_DISABLEMMX) != BST_UNCHECKED) ? 1 : 0;
